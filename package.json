@@ -1,0 +1,28 @@
+{
+  "name": "tabbatch-pdf",
+  "version": "2.0.0",
+  "description": "Save any number of open tabs as crisp vector PDFs, then reorder and merge them into one polished document.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage",
+    "lint": "eslint src tests --ext .js"
+  },
+  "keywords": [
+    "chrome-extension",
+    "pdf",
+    "tabs",
+    "merge-pdf",
+    "vector-pdf",
+    "save-as-pdf",
+    "manifest-v3"
+  ],
+  "author": "Shahriar Ahmed Seam",
+  "license": "MIT",
+  "devDependencies": {
+    "fake-indexeddb": "^6.0.0",
+    "vitest": "^2.1.8"
+  }
+}

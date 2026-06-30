@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TabBatch PDF</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header>
+    <img src="../../icons/icon48.png" alt="" />
+    <div class="titles">
+      <h1>TabBatch PDF</h1>
+      <div class="ver" id="version">v2.0.0</div>
+    </div>
+    <button class="icon-btn" id="managerBtn" title="Open PDF Manager">🗂</button>
+    <button class="icon-btn" id="optionsBtn" title="Settings">⚙</button>
+  </header>
+
+  <main id="setupView">
+    <div class="toolbar">
+      <div class="seg" id="scopeSeg" role="tablist" aria-label="Capture scope">
+        <button data-scope="window" class="active">This window</button>
+        <button data-scope="all">All windows</button>
+      </div>
+    </div>
+    <div class="toolbar">
+      <div class="seg" id="modeSeg" aria-label="Capture mode">
+        <button data-mode="single" class="active" title="One tall continuous page per tab">Continuous</button>
+        <button data-mode="paged" title="Standard paper size with page breaks">Paged</button>
+      </div>
+    </div>
+    <div class="row" id="paperRow">
+      <label for="paperSel">Paper</label>
+      <select id="paperSel">
+        <option value="A4">A4</option>
+        <option value="Letter">Letter</option>
+        <option value="Legal">Legal</option>
+        <option value="A3">A3</option>
+        <option value="A5">A5</option>
+        <option value="Tabloid">Tabloid</option>
+      </select>
+      <select id="orientSel">
+        <option value="portrait">Portrait</option>
+        <option value="landscape">Landscape</option>
+      </select>
+    </div>
+
+    <div class="list-head">
+      <span class="count" id="selCount">0 selected</span>
+      <div>
+        <button class="linkbtn" id="selectAll">All</button>
+        <button class="linkbtn" id="selectNone">None</button>
+      </div>
+    </div>
+    <div class="tablist" id="tabList">
+      <div class="empty"><div class="spinner"></div>Loading tabs…</div>
+    </div>
+
+    <footer>
+      <button class="btn-primary" id="captureBtn" disabled>
+        <span>📄</span><span id="captureLabel">Capture Selected</span>
+      </button>
+      <div class="subactions">
+        <button id="captureCurrent">Capture current tab</button>
+        <button id="openManager2">View saved PDFs →</button>
+      </div>
+    </footer>
+    <div class="toast hidden" id="toast"></div>
+  </main>
+
+  <section id="progressView" class="hidden">
+    <div class="progress-wrap">
+      <h2 id="progTitle">Capturing tabs…</h2>
+      <div class="cur" id="progCur">Preparing…</div>
+      <div class="bar"><i id="progFill"></i></div>
+      <div class="pct" id="progPct">0 / 0</div>
+      <button class="btn-cancel" id="cancelBtn">Cancel</button>
+    </div>
+  </section>
+
+  <script src="popup.js" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+{
+  "manifest_version": 3,
+  "name": "TabBatch PDF — Save & Merge Tabs to PDF",
+  "short_name": "TabBatch PDF",
+  "version": "2.0.0",
+  "description": "Save any number of open tabs as crisp vector PDFs, then reorder and merge them into one polished document. Fast, private, offline.",
+  "author": "Shahriar Ahmed Seam",
+  "minimum_chrome_version": "109",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": [
+    "debugger",
+    "tabs",
+    "activeTab",
+    "scripting",
+    "downloads",
+    "storage",
+    "notifications",
+    "unlimitedStorage",
+    "contextMenus"
+  ],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_title": "TabBatch PDF",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "src/background/service-worker.js",
+    "type": "module"
+  },
+  "options_ui": {
+    "page": "src/options/options.html",
+    "open_in_tab": true
+  },
+  "commands": {
+    "capture-all": {
+      "suggested_key": { "default": "Ctrl+Shift+Y", "mac": "Command+Shift+Y" },
+      "description": "Capture all tabs in the current window"
+    },
+    "capture-current": {
+      "description": "Capture only the current tab"
+    }
+  }
+}

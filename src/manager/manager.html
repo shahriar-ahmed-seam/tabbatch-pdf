@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TabBatch PDF — Manager</title>
+  <link rel="stylesheet" href="../shared/theme.css" />
+  <link rel="stylesheet" href="manager.css" />
+</head>
+<body>
+  <div class="appbar">
+    <img src="../../icons/icon48.png" alt="" />
+    <div class="titles">
+      <h1>PDF Manager</h1>
+      <div class="sub">Reorder, rename, preview and merge your captured pages</div>
+    </div>
+    <button class="icon-btn" id="themeBtn" title="Toggle theme">🌓</button>
+    <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
+  </div>
+
+  <div class="shell">
+    <div class="toolbar">
+      <div class="search">
+        <span>🔍</span>
+        <input type="search" id="searchInput" placeholder="Search by title or URL…" />
+      </div>
+      <label class="check-all"><input type="checkbox" id="checkAll" /> Select all</label>
+      <select id="sortSelect" title="Sort order">
+        <option value="manual">Custom order</option>
+        <option value="title">Title A→Z</option>
+        <option value="title-desc">Title Z→A</option>
+        <option value="newest">Newest first</option>
+        <option value="oldest">Oldest first</option>
+        <option value="size">Largest first</option>
+      </select>
+      <span class="stat" id="stat">0 PDFs</span>
+    </div>
+
+    <div class="merge-opts" id="mergeOpts">
+      <label><input type="checkbox" id="optPageNumbers" /> Page numbers</label>
+      <label><input type="checkbox" id="optBookmarks" checked /> Bookmarks</label>
+      <label><input type="checkbox" id="optToc" /> Table of contents</label>
+    </div>
+
+    <div class="bulkbar">
+      <button class="btn btn-primary" id="mergeBtn" disabled>⬇ Merge &amp; Download</button>
+      <button class="btn" id="mergeSelectedBtn" disabled>Merge selected</button>
+      <div class="spacer"></div>
+      <button class="btn" id="downloadEachBtn" disabled>Download each</button>
+      <button class="btn btn-danger" id="deleteSelectedBtn" disabled>Delete selected</button>
+      <button class="btn btn-danger" id="clearBtn" disabled>Clear all</button>
+    </div>
+
+    <div id="loading" class="loading"><div class="spinner"></div>Loading your PDFs…</div>
+    <div id="empty" class="empty hidden">
+      <div class="ico">📭</div>
+      <h2>No PDFs yet</h2>
+      <p>Click the TabBatch PDF toolbar icon, pick some tabs, and capture them.</p>
+    </div>
+    <div id="grid" class="grid"></div>
+  </div>
+
+  <!-- merge progress -->
+  <div id="progressModal" class="modal hidden">
+    <div class="modal-box">
+      <h2 id="progTitle">Merging PDFs…</h2>
+      <div class="progress-bar"><i id="progFill"></i></div>
+      <p id="progText">Starting…</p>
+    </div>
+  </div>
+
+  <!-- confirm -->
+  <div id="confirmModal" class="modal hidden">
+    <div class="modal-box">
+      <h2 id="confirmTitle">Are you sure?</h2>
+      <p id="confirmText"></p>
+      <div class="row">
+        <button class="btn" id="confirmCancel">Cancel</button>
+        <button class="btn btn-danger" id="confirmOk">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- preview -->
+  <div id="previewModal" class="modal preview-modal hidden">
+    <div class="modal-box">
+      <div class="phead">
+        <span class="pt" id="previewTitle">Preview</span>
+        <button class="btn" id="previewDownload">⬇ Download</button>
+        <button class="btn" id="previewClose">✕ Close</button>
+      </div>
+      <iframe id="previewFrame" title="PDF preview"></iframe>
+    </div>
+  </div>
+
+  <div class="toasts" id="toasts"></div>
+
+  <script src="../../lib/pdf-lib.min.js"></script>
+  <script src="manager.js" type="module"></script>
+</body>
+</html>

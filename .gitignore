@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Build / packaging output
+*.zip
+dist/
+web-ext-artifacts/
+
+# Coverage & logs
+coverage/
+*.log
+npm-debug.log*
+
+# Editor / OS noise
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db

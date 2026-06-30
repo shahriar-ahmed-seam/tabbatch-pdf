@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TabBatch PDF — Settings</title>
+  <link rel="stylesheet" href="../shared/theme.css" />
+  <link rel="stylesheet" href="options.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="page-head">
+      <img src="../../icons/icon128.png" alt="" />
+      <div>
+        <h1>TabBatch PDF Settings</h1>
+        <div class="sub">Tune how tabs are captured and how your merged PDF is built.</div>
+      </div>
+    </div>
+
+    <div class="welcome hidden" id="welcome">
+      <h2>👋 Welcome to TabBatch PDF!</h2>
+      <p>Open some tabs, click the toolbar icon, choose what to capture, and merge everything into one PDF. Set your defaults below — they sync across your Chrome profile.</p>
+    </div>
+
+    <div class="card">
+      <h3>Appearance</h3>
+      <div class="field">
+        <div><div class="label">Theme</div><div class="desc">Match your system, or force light/dark.</div></div>
+        <div class="control">
+          <select data-setting="theme">
+            <option value="system">System</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Capture defaults</h3>
+      <div class="hint">These are pre-selected in the popup; you can still change them per capture.</div>
+      <div class="field">
+        <div><div class="label">Capture mode</div><div class="desc">Continuous = one tall page. Paged = standard paper with page breaks.</div></div>
+        <div class="control">
+          <select data-setting="captureMode">
+            <option value="single">Continuous (single page)</option>
+            <option value="paged">Paged</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <div><div class="label">Paper size</div><div class="desc">Used in Paged mode and for oversized pages.</div></div>
+        <div class="control">
+          <select data-setting="paperSize">
+            <option value="A4">A4</option><option value="Letter">Letter</option>
+            <option value="Legal">Legal</option><option value="A3">A3</option>
+            <option value="A5">A5</option><option value="Tabloid">Tabloid</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <div><div class="label">Orientation</div></div>
+        <div class="control">
+          <select data-setting="orientation">
+            <option value="portrait">Portrait</option>
+            <option value="landscape">Landscape</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <div><div class="label">Page margin (inches)</div><div class="desc">Paged mode only.</div></div>
+        <div class="control"><input type="range" min="0" max="2" step="0.1" data-setting="margin" data-range /><span class="rangeval" data-for="margin"></span></div>
+      </div>
+      <div class="field">
+        <div><div class="label">Render scale</div><div class="desc">Zoom factor applied while printing (0.1–2).</div></div>
+        <div class="control"><input type="range" min="0.3" max="2" step="0.1" data-setting="scale" data-range /><span class="rangeval" data-for="scale"></span></div>
+      </div>
+      <div class="field">
+        <div><div class="label">Print background graphics</div><div class="desc">Include background colours and images.</div></div>
+        <div class="control"><label class="switch"><input type="checkbox" data-setting="printBackground" /><span class="slider"></span></label></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Page preparation</h3>
+      <div class="field">
+        <div><div class="label">Auto-scroll to load lazy content</div><div class="desc">Scrolls the page so lazy images/sections render before capture.</div></div>
+        <div class="control"><label class="switch"><input type="checkbox" data-setting="scrollToBottom" /><span class="slider"></span></label></div>
+      </div>
+      <div class="field">
+        <div><div class="label">Hide sticky headers</div><div class="desc">Continuous mode: prevents repeated floating bars.</div></div>
+        <div class="control"><label class="switch"><input type="checkbox" data-setting="removeStickyHeaders" /><span class="slider"></span></label></div>
+      </div>
+      <div class="field">
+        <div><div class="label">Hide footers</div><div class="desc">Continuous mode: removes sticky footers that cause gaps.</div></div>
+        <div class="control"><label class="switch"><input type="checkbox" data-setting="removeFooters" /><span class="slider"></span></label></div>
+      </div>
+      <div class="field">
+        <div><div class="label">Content settle delay (ms)</div><div class="desc">Extra wait before printing for animations/fonts.</div></div>
+        <div class="control"><input type="number" min="0" max="15000" step="100" data-setting="waitForContent" /></div>
+      </div>
+      <div class="field">
+        <div><div class="label">Max single-page height (inches)</div><div class="desc">Taller pages fall back to paged mode to avoid crashes.</div></div>
+        <div class="control"><input type="number" min="11" max="500" step="10" data-setting="maxPageHeightInches" /></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Thumbnails &amp; notifications</h3>
+      <div class="field">
+        <div><div class="label">Capture thumbnails</div><div class="desc">Preview images in the manager (briefly focuses each tab).</div></div>
+        <div class="control"><label class="switch"><input type="checkbox" data-setting="thumbnails" /><span class="slider"></span></label></div>
+      </div>
+      <div class="field">
+        <div><div class="label">Thumbnail quality</div></div>
+        <div class="control"><input type="range" min="20" max="100" step="5" data-setting="thumbnailQuality" data-range /><span class="rangeval" data-for="thumbnailQuality"></span></div>
+      </div>
+      <div class="field">
+        <div><div class="label">Desktop notifications</div></div>
+        <div class="control"><label class="switch"><input type="checkbox" data-setting="notifications" /><span class="slider"></span></label></div>
+      </div>
+      <div class="field">
+        <div><div class="label">Sound on complete</div></div>
+        <div class="control"><label class="switch"><input type="checkbox" data-setting="soundOnComplete" /><span class="slider"></span></label></div>
+      </div>
+      <div class="field">
+        <div><div class="label">Open manager after capture</div></div>
+        <div class="control"><label class="switch"><input type="checkbox" data-setting="autoOpenManager" /><span class="slider"></span></label></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Merge &amp; export</h3>
+      <div class="field">
+        <div><div class="label">Filename template</div>
+          <div class="token-help">Tokens: <code>{title}</code> <code>{date}</code> <code>{time}</code> <code>{datetime}</code> <code>{count}</code></div>
+        </div>
+        <div class="control"><input type="text" data-setting="filenameTemplate" /></div>
+      </div>
+      <div class="field">
+        <div><div class="label">Document title (metadata)</div></div>
+        <div class="control"><input type="text" data-setting="mergedTitle" /></div>
+      </div>
+      <div class="field">
+        <div><div class="label">Author (metadata)</div></div>
+        <div class="control"><input type="text" data-setting="pdfAuthor" placeholder="optional" /></div>
+      </div>
+      <div class="field">
+        <div><div class="label">Add page numbers</div><div class="desc">Stamps "Page X / N" on the merged document.</div></div>
+        <div class="control"><label class="switch"><input type="checkbox" data-setting="addPageNumbers" /><span class="slider"></span></label></div>
+      </div>
+      <div class="field">
+        <div><div class="label">Add bookmarks (outline)</div><div class="desc">One PDF bookmark per source tab for easy navigation.</div></div>
+        <div class="control"><label class="switch"><input type="checkbox" data-setting="addBookmarks" /><span class="slider"></span></label></div>
+      </div>
+      <div class="field">
+        <div><div class="label">Add table of contents page</div><div class="desc">Generates a clickable index page at the front.</div></div>
+        <div class="control"><label class="switch"><input type="checkbox" data-setting="addTableOfContents" /><span class="slider"></span></label></div>
+      </div>
+      <div class="field">
+        <div><div class="label">Show "Save As" dialog</div></div>
+        <div class="control"><label class="switch"><input type="checkbox" data-setting="saveAsDialog" /><span class="slider"></span></label></div>
+      </div>
+      <div class="field">
+        <div><div class="label">Confirm before clearing all</div></div>
+        <div class="control"><label class="switch"><input type="checkbox" data-setting="confirmBeforeClear" /><span class="slider"></span></label></div>
+      </div>
+    </div>
+
+    <div class="actions-bar">
+      <button class="btn btn-danger" id="resetBtn">Reset to defaults</button>
+      <button class="btn btn-primary" id="saveBtn">Save changes</button>
+    </div>
+  </div>
+
+  <div class="saved-toast" id="savedToast">✓ Saved</div>
+  <script src="options.js" type="module"></script>
+</body>
+</html>
