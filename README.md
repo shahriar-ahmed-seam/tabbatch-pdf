@@ -127,6 +127,20 @@ Regenerate icons after editing the design:
 python store_assets/make_icons.py
 ```
 
+## 📦 Publishing
+
+The extension is free to publish to the **Microsoft Edge Add-ons** store (no fee)
+and costs a one-time **$5** for the **Chrome Web Store** — both accept the same
+package and can be submitted from any browser.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File store_assets/package.ps1   # builds tabbatch-pdf.zip
+```
+
+- Step-by-step instructions: [`store_assets/SUBMISSION.md`](store_assets/SUBMISSION.md)
+- Ready-to-paste listing copy, tags & permission justifications: [`store_assets/STORE_LISTING.md`](store_assets/STORE_LISTING.md)
+- Make correctly-sized store images (offline): open `store_assets/screenshot-framer.html`
+
 ## ❓ Troubleshooting
 
 - **A tab was skipped.** Browser pages (`chrome://`, `edge://`), the Web Store, and the new-tab page can't be captured — that's a Chromium security rule, not a bug.

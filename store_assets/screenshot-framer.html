@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TabBatch PDF — Store Image Framer</title>
+<style>
+  :root { --p:#4f46e5; --a:#8b5cf6; --bg:#0f111a; --card:#1c1f2b; --bd:#2c3040; --tx:#eef0f6; --ts:#9aa0b8; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--tx); padding:24px; }
+  h1 { font-size:22px; margin-bottom:4px; }
+  .sub { color:var(--ts); font-size:13px; margin-bottom:20px; }
+  .layout { display:grid; grid-template-columns:320px 1fr; gap:24px; align-items:start; }
+  .panel { background:var(--card); border:1px solid var(--bd); border-radius:14px; padding:18px; }
+  label { display:block; font-size:12.5px; font-weight:600; color:var(--ts); margin:14px 0 5px; }
+  label:first-child { margin-top:0; }
+  input[type=text], select, textarea {
+    width:100%; padding:9px 11px; border:1px solid var(--bd); border-radius:9px;
+    background:#14161f; color:var(--tx); font-size:13.5px; font-family:inherit;
+  }
+  textarea { resize:vertical; min-height:48px; }
+  .drop {
+    border:2px dashed var(--bd); border-radius:12px; padding:24px; text-align:center;
+    color:var(--ts); font-size:13px; cursor:pointer; transition:.15s; margin-top:6px;
+  }
+  .drop.hover { border-color:var(--a); color:var(--tx); background:rgba(139,92,246,.08); }
+  .row { display:flex; gap:8px; }
+  .btn { width:100%; margin-top:18px; padding:12px; border:none; border-radius:10px;
+    background:linear-gradient(135deg,var(--p),var(--a)); color:#fff; font-weight:700; font-size:15px; cursor:pointer; }
+  .btn.sec { background:#262a45; margin-top:8px; }
+  .preview { background:#0a0b12; border:1px solid var(--bd); border-radius:14px; padding:18px; overflow:auto; }
+  canvas { max-width:100%; height:auto; border-radius:8px; box-shadow:0 10px 40px rgba(0,0,0,.5); display:block; margin:0 auto; }
+  .dim { text-align:center; color:var(--ts); font-size:12px; margin-top:10px; }
+  .swatches { display:flex; gap:8px; margin-top:6px; }
+  .sw { width:34px; height:28px; border-radius:7px; border:2px solid transparent; cursor:pointer; }
+  .sw.active { border-color:#fff; }
+</style>
+</head>
+<body>
+  <h1>TabBatch PDF — Store Image Framer</h1>
+  <div class="sub">Make perfectly-sized Chrome / Edge store images. Drop a screenshot, add a caption, download. 100% offline.</div>
+
+  <div class="layout">
+    <div class="panel">
+      <label>Output preset</label>
+      <select id="preset">
+        <option value="1280,800,shot">Screenshot — 1280×800 (recommended)</option>
+        <option value="640,400,shot">Screenshot — 640×400</option>
+        <option value="1400,560,promo">Marquee promo — 1400×560</option>
+        <option value="440,280,promo">Small promo tile — 440×280</option>
+        <option value="300,300,logo">Edge store logo — 300×300</option>
+      </select>
+
+      <label>Title</label>
+      <input type="text" id="title" value="Save & merge tabs into one PDF" />
+      <label>Subtitle (optional)</label>
+      <input type="text" id="subtitle" value="Vector quality • Private • Offline" />
+
+      <label>Background</label>
+      <div class="swatches" id="swatches"></div>
+
+      <label>Screenshot (drag or click)</label>
+      <div class="drop" id="drop">Drop image here, or click to choose</div>
+      <input type="file" id="file" accept="image/*" hidden />
+
+      <button class="btn" id="download">⬇ Download PNG</button>
+      <button class="btn sec" id="clearShot">Remove screenshot</button>
+    </div>
+
+    <div class="preview">
+      <canvas id="canvas"></canvas>
+      <div class="dim" id="dim"></div>
+    </div>
+  </div>
+
+<script>
+const LOGO_SRC = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAFkElEQVR42u2cTW8bVRSG7z+Yn+IVC1b+Cf4DSfloElpKMA0tbYHWlK9AI2EisWmFOhKsUIUQKz42I77SRQAjJEoFQkMWBQSIwRPbDYT0cE5xRBIZOnbsnHvnvK/0XI2iJJ77nsfjcVrZuQnk8Fy7wtSZmEmYlCEwFGm/u7jfZcX5nJm5dq1/shmGNzGk21i69mXoEdNgUobAgZL2u4+0hi8PnmEQ6sgMGgc5+Cqe8d5eEaoTHf7sXLvJEPCa5vgHP9uOmIQhEAQyq2icw2+h1OBo7VuCOf4FTMYQCBKZXbSf4bdQYvC0RpKAfyhBeaUhGXb4TZRWOoq9O3hgtl1lCJSSagEB8pQhUErSOw2/gZJKz+A/Gx+ZzSMmYwiUGplxNEiABsoxQ2OQACmKMcPue4Gjs3mNIWCKf/9TydGZPGYImCLeKUCGQsyR3R7+gzN5hSFgkooIUEcRZqmLADGKMEvsjs3kCUM+cGI+p9cu9+jqx3/SN9c31VlZ6dLS8hq9+VZG777X2RdXrqzT8kvrdPyYH133SUSA1IeTufhKj7rdW+Rbvv62TRdf/45WVn+nL691983q5x1aWvRGgNT5cCLyrPc545ZAkKuBD92rC3Du1DqFkElIcHrBAwEe4kUTeb0PJeOWQO4LtPtXF+DXX7YopIxTgk+udiBAiBmnBOoCzPOiSagZlwTa/bv5w3ygSMgZhwTa/UMAZQnUBXiYF02KZu3H3+h6+pOXvP/R2sgSaPcfjABS9OpXa97yzgfpSBJAgJIIMKoE6gLUedGkTAKMIoF2/xBgAgxzT+CBAOukSRluAvci51r03YF2/+4RXjQpc4pIoN0/BFCWAAIYyP9JAAEKpnvzD8o7N4NAzrWoBOoCHL9/nTQp47sAOdeiVwLt/iHAAQowSAIIYEyAvRKoC7DAiyYWBdgpgXb/EEBJgG0JIICRdwH/FXUBHuVFE+vR7h8CQAAIYFqAE7xoUtZ/DSwa7f6DEaCM7wIgAATQF+AkL5pYF0C7f3fyPj5QxLwAyv1DAAgQhgBljboAj/GiifVo9w8BIAAEMC3AKV40sR7t/lmADmkCAXT7hwDWBTjNiybWo90/BIAAEMC0AGd40cR6tPt3Z+7lA0XMC6DcPwSwLsDjvGhiPdr9ey3A5g83KH/1UtDIHiDAiAJsfPYp3bj7rqCRPUAACOCvAE/wool1AbT7hwAQAAKYFuBJXjSxLoB2/xAAAkAA0wKc5UUT6wJo9+/O3sMHipgXQLl/CGBdgHO8aGJdAO3+vRZgK89vFxgysgcIMKIAFqIuQIMXTaxHu38IAAG6pEnR+PIhUcN8AFQxAXT7D0YAXz4gYpgPfwhCgKd40cS6ANr9QwAIEIYAZb0HUBfgPC+aWL8CaPfvzh/iA0XMC6DcPwSwLsDTvGiS/bxlVgDZu3b/6gJ88eGm2ZtA2bt5AZYXemb/DCx7VxfgGV60efvShrnhy5596F4ESH04kTde3qCbnVulH7zsUfbqQ+cyexEg8eRk6MKRf64G8tr4/bW/SoXsSfYme/Slb5m9e/ZQN2YImCQWAeoowix1EaCCIsxScRI+yFCGOTK3neemuzFDwBTxTgFqKMQcNbcz/IUUpZghdXvz/HS3wRAwQWOQABGToZzSIzOO3KDgKmD02b8zi/z6wBAoJam7U/ibqiiqtFRdkSxO95oMgVLRdMPkhelewhAoBYkbNvxDEdNCecEjM4zcKOlLkKHEYMlGHv52XuRfwLQYAkEhM9vf8HdJMNVLGAJBkIxt+LtEmOo1Ua73NN0kww9QZVIU7R0yk6o7qFyY6jWYjCGgisyg4TTCDxz1RUgxiAMn7XcfOR/CJ1JjYlwVJv5sl45rzucsTfUqTJ2JmYRJGQJDkfa7i/tdViYxq78BBP3F6w4bt1AAAAAASUVORK5CYII=";
+
+const presetSel = document.getElementById('preset');
+const titleEl = document.getElementById('title');
+const subEl = document.getElementById('subtitle');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const dim = document.getElementById('dim');
+const drop = document.getElementById('drop');
+const fileInput = document.getElementById('file');
+
+const BACKDROPS = [
+  { name:'Indigo', kind:'grad', from:'#4f46e5', to:'#8b5cf6' },
+  { name:'Night', kind:'grad', from:'#1e1b4b', to:'#4f46e5' },
+  { name:'Light', kind:'solid', color:'#eef0f7' },
+  { name:'Dark', kind:'solid', color:'#14161f' },
+];
+let bgIndex = 0;
+let shot = null;
+const logo = new Image();
+let logoReady = false;
+logo.onload = () => { logoReady = true; render(); };
+logo.src = LOGO_SRC;
+
+// swatches
+const sw = document.getElementById('swatches');
+BACKDROPS.forEach((b, i) => {
+  const d = document.createElement('div');
+  d.className = 'sw' + (i === 0 ? ' active' : '');
+  d.style.background = b.kind === 'grad' ? `linear-gradient(135deg,${b.from},${b.to})` : b.color;
+  d.title = b.name;
+  d.onclick = () => { bgIndex = i; [...sw.children].forEach(c => c.classList.remove('active')); d.classList.add('active'); render(); };
+  sw.appendChild(d);
+});
+
+function parsePreset() {
+  const [w, h, mode] = presetSel.value.split(',');
+  return { w: +w, h: +h, mode };
+}
+
+function paintBg(w, h) {
+  const b = BACKDROPS[bgIndex];
+  if (b.kind === 'grad') {
+    const g = ctx.createLinearGradient(0, 0, w, h);
+    g.addColorStop(0, b.from); g.addColorStop(1, b.to);
+    ctx.fillStyle = g;
+  } else ctx.fillStyle = b.color;
+  ctx.fillRect(0, 0, w, h);
+}
+
+function textColor() {
+  return BACKDROPS[bgIndex].name === 'Light' ? '#1e2235' : '#ffffff';
+}
+function subColor() {
+  return BACKDROPS[bgIndex].name === 'Light' ? '#5b6178' : 'rgba(255,255,255,.85)';
+}
+
+function roundRect(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function render() {
+  const { w, h, mode } = parsePreset();
+  canvas.width = w; canvas.height = h;
+  dim.textContent = `${w} × ${h} px`;
+  paintBg(w, h);
+  const scale = w / 1280;
+
+  if (mode === 'logo') {
+    if (logoReady) {
+      const s = w * 0.62;
+      ctx.drawImage(logo, (w - s) / 2, (h - s) / 2, s, s);
+    }
+    return;
+  }
+
+  if (mode === 'promo') {
+    if (logoReady) {
+      const s = h * 0.42;
+      ctx.drawImage(logo, w * 0.5 - s / 2, h * 0.16, s, s);
+    }
+    ctx.textAlign = 'center';
+    ctx.fillStyle = textColor();
+    ctx.font = `800 ${Math.round(h * 0.11)}px 'Segoe UI',sans-serif`;
+    ctx.fillText('TabBatch PDF', w / 2, h * 0.72);
+    ctx.fillStyle = subColor();
+    ctx.font = `600 ${Math.round(h * 0.055)}px 'Segoe UI',sans-serif`;
+    ctx.fillText(titleEl.value || '', w / 2, h * 0.86);
+    return;
+  }
+
+  // screenshot mode
+  ctx.textAlign = 'center';
+  ctx.fillStyle = textColor();
+  ctx.font = `800 ${Math.round(44 * scale)}px 'Segoe UI',sans-serif`;
+  ctx.fillText(titleEl.value || '', w / 2, 72 * scale);
+  if (subEl.value) {
+    ctx.fillStyle = subColor();
+    ctx.font = `600 ${Math.round(22 * scale)}px 'Segoe UI',sans-serif`;
+    ctx.fillText(subEl.value, w / 2, 110 * scale);
+  }
+
+  const top = (subEl.value ? 150 : 110) * scale;
+  const pad = 70 * scale;
+  const frameW = w - pad * 2;
+  const frameH = h - top - pad * 0.7;
+  const fx = pad, fy = top;
+
+  // window card
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,.4)';
+  ctx.shadowBlur = 40 * scale; ctx.shadowOffsetY = 16 * scale;
+  ctx.fillStyle = '#1c1f2b';
+  roundRect(fx, fy, frameW, frameH, 16 * scale); ctx.fill();
+  ctx.restore();
+
+  // title bar dots
+  const bar = 34 * scale;
+  ctx.fillStyle = '#2c3040';
+  roundRect(fx, fy, frameW, bar, 16 * scale); ctx.fill();
+  ctx.fillRect(fx, fy + bar - 16 * scale, frameW, 16 * scale);
+  ['#ff5f57', '#febc2e', '#28c840'].forEach((c, i) => {
+    ctx.fillStyle = c; ctx.beginPath();
+    ctx.arc(fx + (24 + i * 22) * scale, fy + bar / 2, 6 * scale, 0, 7); ctx.fill();
+  });
+
+  // screenshot fit inside content area
+  const cx = fx, cy = fy + bar, cw = frameW, ch = frameH - bar;
+  ctx.save();
+  roundRect(cx, cy, cw, ch, 4); ctx.clip();
+  if (shot) {
+    const r = Math.min(cw / shot.width, ch / shot.height);
+    const dw = shot.width * r, dh = shot.height * r;
+    ctx.fillStyle = '#0f111a'; ctx.fillRect(cx, cy, cw, ch);
+    ctx.drawImage(shot, cx + (cw - dw) / 2, cy + (ch - dh) / 2, dw, dh);
+  } else {
+    ctx.fillStyle = '#0f111a'; ctx.fillRect(cx, cy, cw, ch);
+    ctx.fillStyle = '#6b7090'; ctx.textAlign = 'center';
+    ctx.font = `600 ${Math.round(20 * scale)}px 'Segoe UI',sans-serif`;
+    ctx.fillText('Drop a screenshot of the popup or manager →', cx + cw / 2, cy + ch / 2);
+  }
+  ctx.restore();
+}
+
+function loadImage(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => { shot = img; render(); };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+drop.onclick = () => fileInput.click();
+fileInput.onchange = (e) => { if (e.target.files[0]) loadImage(e.target.files[0]); };
+['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('hover'); }));
+['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove('hover'); }));
+drop.addEventListener('drop', (e) => { const f = e.dataTransfer.files[0]; if (f) loadImage(f); });
+window.addEventListener('paste', (e) => {
+  const item = [...(e.clipboardData?.items || [])].find(i => i.type.startsWith('image'));
+  if (item) loadImage(item.getAsFile());
+});
+
+document.getElementById('clearShot').onclick = () => { shot = null; render(); };
+[presetSel, titleEl, subEl].forEach(el => el.addEventListener('input', render));
+document.getElementById('download').onclick = () => {
+  const { w, h } = parsePreset();
+  const a = document.createElement('a');
+  a.download = `tabbatch-${w}x${h}.png`;
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+};
+
+render();
+</script>
+</body>
+</html>

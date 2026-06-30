@@ -101,6 +101,7 @@ into a single downloadable PDF document. All processing happens locally.
 
 ## Assets checklist
 - [x] Store icon 128×128 (`icons/icon128.png`)
+- [x] Edge store logo 300×300 (`store_assets/icon300.png`)
 - [x] High-res icon 512×512 (`store_assets/icon512.png`)
-- [ ] At least one 1280×800 (or 640×400) screenshot of the popup and manager
-- [ ] Optional 440×280 small promo tile
+- [ ] At least one 1280×800 screenshot — make it with `store_assets/screenshot-framer.html`
+- [ ] Optional 440×280 small promo tile — `screenshot-framer.html` → "Small promo tile" preset
