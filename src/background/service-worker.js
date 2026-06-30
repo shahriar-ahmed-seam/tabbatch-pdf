@@ -380,7 +380,7 @@ function buildPrintParams(settings, metrics) {
   // Paged fallback (also used when a single page would exceed the safe cap).
   let orientation = settings.orientation;
   if (
-    settings.captureMode === 'single' === false &&
+    settings.captureMode === 'paged' &&
     settings.landscapeAutoWide &&
     metrics &&
     metrics.widthInches > metrics.heightInches
